@@ -1,0 +1,45 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+syntax = "proto3";
+package sa;
+option go_package = "capb";
+option csharp_namespace = "Brick.CertificateAuthority";
+
+import "corepb/core.proto";
+
+service CertificateAuthority {
+    rpc CompleteOrder(CompleteOrderRequest) returns (core.Empty) {}
+    rpc GetCaCertificates(core.Empty) returns (CaCertificateList) {}
+    rpc GenerateCRL(core.IdRequest) returns (core.CRL) {}
+    rpc GenerateOCSPResponse(OCSPCertRequest) returns (OCSPResponse) {}
+    rpc GenerateOCSPResponseByID(OCSPIdRequest) returns (OCSPResponse) {}
+}
+
+message CompleteOrderRequest {
+    core.Order Order = 1;
+    bytes Csr = 2;
+}
+
+message CaCertificateList {
+    repeated core.CaCertificate CaCerts = 1;
+}
+
+message GenerateCRLRequest {
+    string CaName = 1;
+}
+
+message OCSPResponse {
+    bytes OCSP = 1;
+}
+
+message OCSPIdRequest {
+    string Id = 1;
+    bytes Nonce = 2;
+}
+
+message OCSPCertRequest {
+    core.Certificate Certificate = 1;
+    bytes Nonce = 2;
+}

@@ -1,0 +1,4 @@
+.vscore/
+.vs
+.git
+**/bin/*

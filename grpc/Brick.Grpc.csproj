@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.27</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="capb\ca.proto" />
+    <None Remove="corepb\core.proto" />
+    <None Remove="cryptoservice\cryptoservice.proto" />
+    <None Remove="sapb\sa.proto" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CAToolbox" Version="1.4.0" />
+    <PackageReference Include="Google.Protobuf" Version="3.15.6" />
+    <PackageReference Include="Grpc" Version="2.36.4" />
+    <PackageReference Include="Grpc.Tools" Version="2.36.4">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.13" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.36.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProtoBuf Include="capb\ca.proto" />
+    <ProtoBuf Include="corepb\core.proto" />
+    <ProtoBuf Include="cryptoservice\cryptoservice.proto" />
+    <ProtoBuf Include="sapb\sa.proto" />
+  </ItemGroup>
+
+</Project>

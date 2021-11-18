@@ -1,0 +1,19 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+syntax = "proto3";
+package va;
+option go_package = "vapb";
+option csharp_namespace = "Brick.VerificationAuthority";
+
+import "corepb/core.proto";
+
+message ValidationMessage {
+  core.Authorization authorization = 1;
+  core.Challenge challenge = 2;
+  string accountJWK = 3;
+}
+service BrickValidation {
+  rpc DoValidate(ValidationMessage) returns (core.Empty) {}
+}

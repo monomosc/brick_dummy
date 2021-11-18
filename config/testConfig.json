@@ -1,0 +1,5 @@
+{
+    "CA" : {
+        "address" : "consul-http://localhost:8500/brickca"
+    }
+}

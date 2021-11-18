@@ -1,0 +1,27 @@
+{
+    "json_logging": false,
+    "Storage": {
+        "address": "localhost:9002"
+    },
+    "process_tracing": false,
+    "opentracing": {
+        "enable": false
+    },
+    "port": 4242,
+    "file_logging": {
+        "enable": false,
+        "location": ""
+    },
+    "sleep": true,
+    "tls_config": {
+        "enable": true,
+        "allowed_peers": [
+            "brickweb",
+            "brickstorage"
+        ],
+        "root_location": "C:\\ihc04.pem",
+        "chain_location": "C:\\certs\\brickvalidation.pem",
+        "key_location": "C:\\certs\\brickvalidation_key.pem"
+    },
+    "grpc_logging": false
+}

@@ -1,0 +1,142 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+syntax = "proto3";
+package sa;
+option go_package = "sapb";
+option csharp_namespace = "Brick.StorageAuthority";
+
+import "corepb/core.proto";
+
+service StorageAuthority {
+    //Account
+    rpc GetAccount(core.IdRequest) returns (core.Account) {}
+	rpc GetAccountOrderIDs(core.IdRequest) returns (stream core.IdResponse) {}	//returns List (Stream) of OrderIDs according to ACME-14 7.1.2.1
+    rpc AddAccount(core.Account) returns (core.Empty) {}
+    rpc UpdateAccount(core.Account) returns (core.Empty) {}
+    rpc GetAllAccounts(core.Empty) returns (stream core.Account) {}
+	rpc GetAccountByExternal(ExternalRequest) returns (core.Account) {}
+    //Order
+    rpc AddOrder(newOrder) returns (core.IdResponse) {}   //Creates a new Order and returns its Id
+    rpc UpdateOrder(core.Order) returns (core.Empty) {}
+    rpc GetOrder(core.IdRequest) returns (core.Order) {}
+	//Challenge
+	rpc AddChallenge(addChallengeToAuthz) returns (core.Authorization) {}
+    //Authorizations
+    rpc GetActiveAuthorization(AccountAndIdent) returns (core.Authorization) {} //Returns valid or pending authorization for account and ident
+    rpc AddAuthorization(newAuthz) returns (core.IdResponse) {}
+    rpc UpdateAuthorization(updateAuthz) returns (core.Authorization) {}
+    rpc UpdateAuthorizationStatus(newStatusForId) returns (core.Empty) {}
+    rpc UpdateChallengeStatus(newStatusForId) returns (core.Empty) {}
+    rpc GetAuthorization(core.IdRequest) returns (core.Authorization) {}
+    rpc GetAuthorizationsForAccount(core.IdRequest) returns (stream core.Authorization) {}
+    rpc GetChallenge(core.IdRequest) returns (EnrichedChallenge) {}
+    //Certs
+    rpc AddCaCertificate(core.CaCertificate) returns (core.IdResponse) {}
+    rpc AddCertificate(NewCert) returns (core.IdResponse) {}
+    rpc GetCertificate(core.IdRequest) returns (core.Certificate) {}
+    rpc GetCaCertificate(core.IdRequest) returns (core.CaCertificate) {}
+    rpc RevokeCertificate(RevokeCert) returns (core.Empty) {}
+    rpc GetRevokedCertificates(core.Empty) returns (core.RevokedCertificates) {}
+    rpc GetCertificateBySerial(CertBySerial) returns (core.Certificate) {}
+	rpc GetCertificates(core.Empty) returns (stream core.Certificate) {}
+    //CRLs
+    rpc StoreCRL(core.CRL) returns (core.Empty) {}
+    rpc GetCRL(core.IdRequest) returns (core.CRL) {}
+	//Misc
+	rpc CheckForDuplicate(.sa.KeyDuplicationCheck) returns (KeyDuplicationResult) {}
+}
+
+
+
+service RateLimitingCache {
+    rpc CallOccured(IP) returns (AllowedToProceed) {}
+}
+
+service Noncer {
+    rpc GenerateNonce(core.Empty) returns (Nonce) {}
+    rpc CheckNonce(Nonce) returns (AllowedToProceed) {}
+}
+
+message Nonce {
+    string N = 1;
+}
+
+message IP {
+    string IP = 1;
+}
+
+message AllowedToProceed {
+    bool OK = 1;
+}
+message newOrder {     //resembles core.Order but some Fields are missing, because they have a well-defined default value
+    repeated string authzIDs = 1;
+    string expiresDate = 2;
+    string requestedNotBeforeDate = 6;
+    string requestedNotAfterDate = 7;
+    string AccountId = 10;
+}
+
+message AccountAndIdent {
+    string AccountId = 1;
+    core.Identifier Identifier = 2;
+}
+
+message newStatusForId {
+    string Id = 1;
+    string status = 2;
+}
+message newAuthz {
+    repeated core.Challenge Challenges = 1;
+    string ExpiresDate = 2;
+    core.Identifier Identifier = 3;
+    string AccountId = 4;
+}
+
+message updateAuthz {
+    string Id = 1;
+    string newStatus = 2;
+    core.Challenge updatedChallenge = 3;
+}
+
+message addChallengeToAuthz {
+    string Id = 1;
+    core.Challenge challenge = 2;
+}
+
+message NewCert {
+    repeated string Identifiers = 1;
+    bytes CertDER = 2;
+    string OrderId = 3;
+    string CaCertId = 4;
+    bytes Serial = 5;
+}
+
+message RevokeCert {
+    string Id = 1;
+    string RevocationReason = 2;
+}
+
+message EnrichedChallenge {
+    core.Challenge Challenge = 1;
+    string AuthorizationId = 2;
+    string AccountId = 3;
+}
+
+message CertBySerial {
+    bytes serial = 1;
+    bytes issuerNameHash = 2;
+}
+
+message ExternalRequest {
+	string Identifier = 1;
+}
+
+message KeyDuplicationCheck {
+	bytes SubjectKeyIdentifer = 1;
+}
+
+message KeyDuplicationResult {
+	bool DuplicatedKeyExists = 1;
+}

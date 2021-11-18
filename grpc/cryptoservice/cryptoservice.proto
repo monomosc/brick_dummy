@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package CryptoGear.Grpc;
+option go_package = "cryptoservice";
+
+enum PaddingType
+{
+	Pkcs = 0;
+	Pss = 1;
+}
+
+message DataToSign
+{
+	bytes rawData = 1;
+	string keyLabel = 2;
+	string hashAlgorithm = 3;
+	PaddingType padding = 4;
+}
+
+message SignedData
+{
+	bytes rawData = 1;
+}
+
+service CryptoGear
+{
+	rpc createSignature(DataToSign) returns (SignedData);
+}

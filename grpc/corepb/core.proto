@@ -1,0 +1,106 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+syntax = "proto3";
+
+package core;
+option go_package = "corepb";
+option csharp_namespace = "Brick.Core";
+
+
+
+message Certificate {
+    bytes Serial = 9;
+    string id = 1;
+    bytes certDER = 2;
+    repeated string identifiers = 3;
+    string orderId = 4;
+    CaCertificate CaCert = 5;
+    string RevocationTime = 7;
+    bytes IssuerNameHash = 6;         //Duplicated with CaCertificate for Performance Reasons (OCSP)
+}
+
+message CaCertificate {
+    bytes NameHash = 1;
+    bytes certDER = 2;
+    bool willIssue = 3;
+    string CommonName = 4;
+    string Id = 5;
+    string CaCertId = 6;        // if set to empty string in AddCaCertificate, use generated ID (self-signed)
+}
+
+message IdRequest {
+    string id = 1;
+}
+
+message IdResponse {
+    string id = 1;
+}
+
+message Authorization {
+    string id = 1;
+    string expiresDate = 2;
+    string status = 3;
+    Identifier identifier = 4;
+    repeated Challenge Challenges = 5;
+    string AccountId = 6;
+}
+
+message Identifier {
+    string type = 1;
+    string value = 2;
+}
+
+message Challenge {
+    string Id = 1;
+    string type = 2;
+    string token = 3;
+    string status = 4;
+    string validated = 5;
+    Problem problem = 6;
+}
+
+message Empty {
+}
+
+message Account {
+    string Id = 1;
+    bytes key = 2;
+    string status = 3;
+    repeated string contact = 4;
+    string createdAt = 5;
+    string externalIdentifier = 6;
+}
+
+message Order {
+    string Id = 1;
+    repeated Authorization authz = 2;
+    string status = 3;
+    string expiresDate = 4;
+    string certificateId = 5;
+    string requestedNotBeforeDate = 6;
+    string requestedNotAfterDate = 7;
+    Problem error = 8;
+    string AccountId = 10;
+}
+
+
+message Problem {
+    string type = 1;
+    string detail = 2;
+}
+
+message CRL {
+    string CA = 1;
+    bytes CRL = 2;
+}
+message RevokedCertificate {
+    bytes Serial = 1;
+    string RevocationTime = 2;
+    bytes IssuerNameHash = 3;
+}
+
+message RevokedCertificates {
+    repeated RevokedCertificate revokedCerts = 1;
+}

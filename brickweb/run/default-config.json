@@ -1,0 +1,46 @@
+{
+    "json_logging": false,
+    "Storage": {
+        "address": "localhost:9002"
+    },
+    "CA": {
+        "address": "static:///localhost:9003"
+    },
+    "process_tracing": false,
+    "opentracing": {
+        "enable": false
+    },
+    "account_creation": {
+        "require_external": false,
+        "redirect_uri": "https://go/acme",
+        "validator_name": "oid",
+        "validator_config": {
+            "jwks_uri": "https://stsms.datev.de/adfs/discovery/keys",
+            "issuer": "http://stsms.datev.de/adfs/services/trust"
+        }
+    },
+    "base_url": "http://localhost",
+    "port": 80,
+    "nonce": {
+        "provider": "none"
+    },
+    "VA": {
+        "address": "localhost:4242"
+    },
+    "file_logging": {
+        "enable": false,
+        "location": ""
+    },
+    "tls_config": {
+        "enable": true,
+        "allowed_peers": [
+            "brickvalidation",
+            "brickstorage",
+            "brickca"
+        ],
+        "root_location": "C:\\ihc04.pem",
+        "chain_location": "C:\\certs\\brickweb.pem",
+        "key_location": "C:\\certs\\brickweb_key.pem"
+    },
+    "grpc_logging": false
+}
